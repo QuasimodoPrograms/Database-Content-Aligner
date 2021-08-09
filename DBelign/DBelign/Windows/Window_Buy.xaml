@@ -26,7 +26,8 @@
 
                 <TextBlock Grid.Column="0" Name="tblc_Header" Text="Buy DBelign" FontWeight="Bold" FontSize="18"/>
 
-                <Button Grid.Column="1" Name="btn_Cross" Content="X" HorizontalAlignment="Right" Foreground="#aaaaaa" Click="btn_Close_Click" FontWeight="Bold" FontSize="18"/>
+                <Button Grid.Column="1" Name="btn_Cross" Content="X" HorizontalAlignment="Right" Foreground="#aaaaaa" Click="btn_Close_Click" FontWeight="Bold" FontSize="18"
+                        Style="{StaticResource TransparentButton}"/>
             </Grid>
         </Border>
 
@@ -67,6 +68,6 @@
             </Grid>
         </Border>
 
-        <Button Grid.Row="2" Name="btn_Skip" Content="Skip" Margin="10" Click="btn_Close_Click"/>
+        <Button Grid.Row="2" Name="btn_Skip" Content="Skip" Margin="10" Click="btn_Close_Click" Style="{StaticResource BlueButton}"/>
     </Grid>
 </Window>
