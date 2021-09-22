@@ -1,0 +1,223 @@
+﻿<Window x:Class="DBelign.Window_DataSources"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DBelign"
+        mc:Ignorable="d"
+        Title="Data sources - DBelign" Height="725" Width="1000"
+        MinHeight="400" MinWidth="400"
+        WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded"
+        UseLayoutRounding="True">
+    <Window.Resources>
+        <Style TargetType="Image">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.25"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.25"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="AcceptsReturn" Value="True"/>
+
+            <EventSetter Event="TextChanged" Handler="txtEditor_TextChanged"/>
+        </Style>
+    </Window.Resources>
+
+    <DockPanel>
+        <Grid DockPanel.Dock="Top" MaxHeight="25">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Name="btn_Register" Click="btn_Register_Click" ToolTip="Register this program" Content="Register" BorderBrush="Transparent" Background="Transparent" HorizontalAlignment="Center" Visibility="Collapsed" Margin="5 0 0 0"/>
+
+                <Button Grid.Column="1" Name="btn_Update" Click="btn_Update_Click" ToolTip="Check for update on the website" Content="Update" BorderBrush="Transparent" Background="Transparent" HorizontalAlignment="Center" Visibility="Collapsed" Margin="5 0 0 0"/>
+
+                <ToolBarTray Grid.Column="2" VerticalAlignment="Center" IsLocked="True" HorizontalAlignment="Center">
+                    <ToolBar>
+                        <Button Name="btnOpenFile1" Click="btnOpenFile1_Click" ToolTip="Open source file">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <Image Grid.Column="0" Source="/Images/file.png" MaxHeight="16"/>
+
+                                <TextBlock Grid.Column="1" Text="Source" VerticalAlignment="Center" Margin="5 0"/>
+                            </Grid>
+                        </Button>
+
+                        <Separator/>
+
+                        <Menu Name="menu_source" IsEnabled="False" Background="#00000000">
+                            <MenuItem>
+                                <MenuItem.Header>
+                                    <StackPanel Orientation="Horizontal" ToolTip="from this textbox only">
+                                        <Image Source="/Images/table_multiple-row.jpg" MaxHeight="16" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+
+                                        <TextBlock Text="Align as Word table(s)" Margin="5 0"/>
+
+                                        <Path VerticalAlignment="Center" Margin="8 2 0 0" Fill="Black" Data="M 0 0 L 3 3 L 6 0 Z"/>
+                                    </StackPanel>
+                                </MenuItem.Header>
+
+                                <MenuItem Name="sourceItem_AlignAsTableSingleRow" Click="sourceItem_AlignAsTableSingleRow_Click" ToolTip="2 columns">
+                                    <MenuItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="1 row" Margin="5 0"/>
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                    <MenuItem.Icon>
+                                        <Image Source="/Images/table-1row16px.jpg" MaxHeight="16" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+
+                                <Separator/>
+
+                                <MenuItem Name="sourceItem_AlignAsTableMultipleRows" Click="sourceItem_AlignAsTableMultipleRows_Click" ToolTip="2 columns">
+                                    <MenuItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="multiple rows" Margin="5 0"/>
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                    <MenuItem.Icon>
+                                        <Image Source="/Images/table_multiple-row.jpg" MaxHeight="16" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </MenuItem>
+                        </Menu>
+
+                        <Button x:Name="btn_ClearSource" Content="Clear" Click="btn_ClearSource_Click" ToolBar.OverflowMode="Always"/>
+                    </ToolBar>
+                </ToolBarTray>
+            </Grid>
+
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Name="btn_AlignTwoTexts" Content="Align two texts" Background="Khaki" Click="btn_AlignTwoTexts_Click" IsEnabled="False"/>
+
+                <TextBlock Grid.Column="1" Text="by" Margin="3 0"/>
+
+                <ComboBox Grid.Column="2" Name="comboBox_Separator">
+                    <ComboBoxItem Content="Paragraph" IsSelected="True"/>
+
+                    <ComboBoxItem Content="Sentence"/>
+
+                    <ComboBoxItem Content="Word"/>
+                </ComboBox>
+            </Grid>
+
+            <Grid Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <ToolBarTray Grid.Column="0" VerticalAlignment="Center" IsLocked="True" HorizontalAlignment="Center">
+                    <ToolBar>
+                        <Button Name="btnOpenFile2" Click="btnOpenFile2_Click" ToolTip="Open target file">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <Image Grid.Column="0" Source="/Images/file.png" MaxHeight="16"/>
+
+                                <TextBlock Grid.Column="1" Text="Target" VerticalAlignment="Center" Margin="5 0"/>
+                            </Grid>
+                        </Button>
+
+                        <Separator/>
+
+                        <Menu Name="menu_target" IsEnabled="False" Background="#00000000">
+                            <MenuItem>
+                                <MenuItem.Header>
+                                    <StackPanel Orientation="Horizontal" ToolTip="from this textbox only">
+                                        <Image Source="/Images/table_multiple-row.jpg" MaxHeight="16" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+
+                                        <TextBlock Text="Align as Word table(s)" Margin="5 0"/>
+
+                                        <Path VerticalAlignment="Center" Margin="8 2 0 0" Fill="Black" Data="M 0 0 L 3 3 L 6 0 Z"/>
+                                    </StackPanel>
+                                </MenuItem.Header>
+
+                                <MenuItem Name="targetItem_AlignAsTableSingleRow" Click="targetItem_AlignAsTableSingleRow_Click" ToolTip="2 columns">
+                                    <MenuItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="1 row" Margin="5 0"/>
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                    <MenuItem.Icon>
+                                        <Image Source="/Images/table-1row16px.jpg" MaxHeight="16" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+
+                                <Separator/>
+
+                                <MenuItem Name="targetItem_AlignAsTableMultipleRows" Click="targetItem_AlignAsTableMultipleRows_Click" ToolTip="2 columns">
+                                    <MenuItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="multiple rows" Margin="5 0"/>
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                    <MenuItem.Icon>
+                                        <Image Source="/Images/table_multiple-row.jpg" MaxHeight="16" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </MenuItem>
+                        </Menu>
+
+                        <Button x:Name="btn_ClearTarget" Content="Clear" Click="btn_ClearTarget_Click" ToolBar.OverflowMode="Always"/>
+                    </ToolBar>
+                </ToolBarTray>
+
+                <Button Grid.Column="1" Click="btn_About_Click" ToolTip="About us" BorderBrush="Transparent" Background="Transparent" Height="Auto" Margin="0 0 5 0">
+                    <Image Source="pack://application:,,,/Images/info.png" Width="16" Height="16" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                </Button>
+            </Grid>
+        </Grid>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <TextBox Grid.Column="0" Name="txtEditor1" PreviewDragOver="txtEditor_PreviewDragOver" Drop="txtEditor_Drop"/>
+
+            <TextBox Grid.Column="1" Name="txtEditor2" PreviewDragOver="txtEditor_PreviewDragOver" Drop="txtEditor_Drop"/>
+        </Grid>
+    </DockPanel>
+
+</Window>
