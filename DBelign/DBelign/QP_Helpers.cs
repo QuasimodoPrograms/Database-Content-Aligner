@@ -12,6 +12,14 @@ namespace QP_Helpers
 {
     public class QP_Helpers
     {
+        /// <summary>
+        /// Clear whitespace, newline, vertical tab
+        /// </summary>
+        /// <param name="text">Text that needs clearing</param>
+        /// <returns></returns>
+        public static string ClearBlankCharacters(string text) => text.Replace(" ", string.Empty).Replace("\n", string.Empty)
+            .Replace(Environment.NewLine, string.Empty).Replace("\v", string.Empty).Replace("\r", string.Empty);
+
         #region LICENSE
 
         public static string GetRegister(string fullRegistryPath, string registryValueName)
@@ -26,14 +34,14 @@ namespace QP_Helpers
             string[] licenseKeys;
             var assembly = Assembly.GetExecutingAssembly();
 
-            using(Stream stream = assembly.GetManifestResourceStream(resourceName))
-                using(StreamReader reader = new StreamReader(stream))
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream))
             {
                 licenseKeys = reader.ReadToEnd().Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             }
-            using(MD5 md5Hash = MD5.Create())
+            using (MD5 md5Hash = MD5.Create())
             {
-                if(licenseKeys.Contains(GetMd5Hash(md5Hash, key)))
+                if (licenseKeys.Contains(GetMd5Hash(md5Hash, key)))
                 {
                     return true;
                 }
@@ -53,7 +61,7 @@ namespace QP_Helpers
             StringBuilder sBuilder = new StringBuilder();
 
             // Loop through each byte of the hashed data and format each one as a hexadecimal string.
-            for(int i =0; i < data.Length; i++)
+            for (int i = 0; i < data.Length; i++)
             {
                 sBuilder.Append(data[i].ToString("x2"));
             }

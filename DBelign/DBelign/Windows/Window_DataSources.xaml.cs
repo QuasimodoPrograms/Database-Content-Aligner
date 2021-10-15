@@ -1,8 +1,11 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
 using Excel = Microsoft.Office.Interop.Excel;
 using QP = QP_Helpers.QP_Helpers;
 
@@ -13,6 +16,15 @@ namespace DBelign
     /// </summary>
     public partial class Window_DataSources : Window
     {
+        #region Private members
+
+        /// <summary>
+        /// If the program is not licensed, this is the max number of entries to work at a time
+        /// </summary>
+        private const int mLimitMaxEntryCount = 100;
+
+        #endregion
+
         public Window_DataSources()
         {
             string fullRegistryPath = @"HKEY_CURRENT_USER\Software\Quasimodo Programs\DBelign";
@@ -36,6 +48,22 @@ namespace DBelign
 
         private void btnOpenFile1_Click(object sender, RoutedEventArgs e)
         {
+            // Open a file and read its content into the source textbox
+            OpenFile(txtEditor1);
+        }
+
+        private void btnOpenFile2_Click(object sender, RoutedEventArgs e)
+        {
+            // Open a file and read its content into the target textbox
+            OpenFile(txtEditor2);
+        }
+
+        /// <summary>
+        /// Open a file and read its content into the specified textbox
+        /// </summary>
+        /// <param name="textEditor">TextBox to read the text to</param>
+        private void OpenFile(TextBox textEditor)
+        {
             try
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog
@@ -49,10 +77,10 @@ namespace DBelign
                     string extension = Path.GetExtension(currentFile);
 
                     if (extension == ".docx" || extension == ".doc")
-                        txtEditor1.Text = ReadDocxDoc(currentFile);
+                        textEditor.Text = ReadDocxDoc(currentFile);
                     else if (extension == ".xlsx" || extension == ".xls")
-                        txtEditor1.Text = ReadExcel(currentFile);
-                    else txtEditor1.Text = File.ReadAllText(currentFile);
+                        textEditor.Text = ReadExcel(currentFile);
+                    else textEditor.Text = File.ReadAllText(currentFile);
                 }
             }
             catch (Exception ex)
@@ -115,9 +143,34 @@ namespace DBelign
 
         }
 
-        private void txtEditor_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void txtEditor_TextChanged(object sender, TextChangedEventArgs e)
         {
+            // If the source or target TextBox contains no text...
+            if (QP.ClearBlankCharacters(txtEditor1.Text) == string.Empty || QP.ClearBlankCharacters(txtEditor2.Text) == string.Empty)
+                // Disable the button to align texts
+                btn_AlignTwoTexts.IsEnabled = false;
+            // If source and target TextBoxes contain text...
+            else
+                // Enable the button to align texts
+                btn_AlignTwoTexts.IsEnabled = true;
 
+            // If the source TextBox does not contain text...
+            if (QP.ClearBlankCharacters(txtEditor1.Text) == string.Empty)
+                // Disable the source menu
+                menu_source.IsEnabled = false;
+            // If the source TextBox contains text...
+            else
+                // Enable the source menu
+                menu_source.IsEnabled = true;
+
+            // If the target TextBox does not contain text...
+            if (QP.ClearBlankCharacters(txtEditor2.Text) == string.Empty)
+                // Disable the target menu
+                menu_target.IsEnabled = false;
+            // If the target TextBox contains text...
+            else
+                // Enable the target menu
+                menu_target.IsEnabled = true;
         }
 
         private void btn_Register_Click(object sender, RoutedEventArgs e)
@@ -132,12 +185,121 @@ namespace DBelign
 
         private void sourceItem_AlignAsTableSingleRow_Click(object sender, RoutedEventArgs e)
         {
+            // Align text fragments of the text in the source textbox as a table which consists of 2 columns and 1 row
+            AlignAsTableSingleRow(txtEditor1.Text);
+        }
 
+        /// <summary>
+        /// Align text fragments of the text in the 1 textbox as a table which consists of 2 columns and 1 row
+        /// </summary>
+        /// <param name="text">Text in a TextBox</param>
+        private void AlignAsTableSingleRow(string text)
+        {
+            // A list of source fragments
+            List<string> sourceList = new List<string>();
+
+            // A list of target fragments
+            List<string> targetList = new List<string>();
+
+            // Get tables in text
+            string[] tables = text.Split(new string[] { "\r\r" }, StringSplitOptions.RemoveEmptyEntries);
+
+            // Iterate through all tables
+            foreach (string table in tables)
+            {
+                // If the table is empty...
+                if (table == "\r")
+                    // Skip
+                    continue;
+
+                // Get columns from the table
+                string[] columns = table.Split(new string[] { "\r" }, StringSplitOptions.RemoveEmptyEntries);
+
+                // Get the source text from the source column
+                string sourceText = columns[0].Replace("", string.Empty);
+
+                // Get source fragments from the source text
+                string[] sourceFragments = sourceText.Split(new string[] { Environment.NewLine, "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+
+                // Add source fragments to the list
+                sourceList.AddRange(sourceFragments);
+
+                // If the second column exists...
+                if (columns.Length > 1)
+                {
+                    // Get target text from the second column
+                    string targetText = columns[1].Replace("", string.Empty);
+
+                    // Get target fragments from the target text
+                    string[] targetFragments = targetText.Split(new string[] { Environment.NewLine, "\n", "\r" },
+                        StringSplitOptions.RemoveEmptyEntries);
+
+                    // Add target fragments to the list
+                    targetList.AddRange(targetFragments);
+                }
+            }
+
+            // If the program is licensed...
+            if (QP._isLicensed)
+                // Pass all fragments
+                Window_AlignFragmentsManager.ClosePreviousAndShow(sourceList.ToArray(), targetList.ToArray(), this);
+            // If the program is not licensed...
+            else
+                // Pass only first MAX fragments
+                Window_AlignFragmentsManager.ClosePreviousAndShow(sourceList.Take(mLimitMaxEntryCount).ToArray(),
+                    targetList.Take(mLimitMaxEntryCount).ToArray(), this);
+        }
+
+        /// <summary>
+        /// Align text fragments of the text in the 1 textbox as a table which consists of 2 columns and multiple rows
+        /// </summary>
+        /// <param name="text">Text in a TextBox</param>
+        private void AlignAsTableMultipleRows(string text)
+        {
+            // A list of source fragments
+            List<string> sourceList = new List<string>();
+
+            // A list of target fragments
+            List<string> targetList = new List<string>();
+
+            // Get rows in the table
+            string[] rows = text.Split(new string[] { "\r\r" }, StringSplitOptions.RemoveEmptyEntries);
+
+            // Iterate through all rows
+            foreach (string row in rows)
+            {
+                // If the row is empty...
+                if (row == "\r")
+                    // Skip
+                    continue;
+
+                // Get cells from the row
+                string[] cells = row.Split(new string[] { "\r" }, StringSplitOptions.RemoveEmptyEntries);
+
+                // Add the left cell to the source fragments list
+                sourceList.Add(cells[0]);
+
+                // If the second column exists...
+                if (cells.Length > 1)
+                    // Add the right cell to the target fragments list
+                    targetList.Add(cells[1]);
+            }
+
+            // If the program is licensed...
+            if (QP._isLicensed)
+                // Pass all fragments
+                Window_AlignFragmentsManager.ClosePreviousAndShow(sourceList.ToArray(), targetList.ToArray(), this);
+            // If the program is not licensed...
+            else
+                // Pass only first MAX fragments
+                Window_AlignFragmentsManager.ClosePreviousAndShow(sourceList.Take(mLimitMaxEntryCount).ToArray(),
+                    targetList.Take(mLimitMaxEntryCount).ToArray(), this);
         }
 
         private void sourceItem_AlignAsTableMultipleRows_Click(object sender, RoutedEventArgs e)
         {
-
+            // Align text fragments of the text in the source textbox as a table which consists of 2 columns and multiple rows
+            AlignAsTableMultipleRows(txtEditor1.Text);
         }
 
         private void btn_ClearSource_Click(object sender, RoutedEventArgs e)
@@ -147,22 +309,79 @@ namespace DBelign
 
         private void btn_AlignTwoTexts_Click(object sender, RoutedEventArgs e)
         {
+            // Get the source text cleared from Word table markers
+            string sourceText = txtEditor1.Text.Replace("", string.Empty);
 
+            // Get the target text cleared from Word table markers
+            string targetText = txtEditor2.Text.Replace("", string.Empty);
+
+            // An array for source fragments
+            string[] sourceFragments;
+
+            // An array for target fragments
+            string[] targetFragments;
+
+            // If we align by paragraphs...
+            if (comboBox_Separator.SelectedIndex == 0)
+            {
+                // Split the source text by new lines
+                sourceFragments = sourceText.Split(new string[] { Environment.NewLine, "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+
+                // Split the target text by new lines
+                targetFragments = targetText.Split(new string[] { Environment.NewLine, "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+            }
+            // If we align by sentences...
+            else if (comboBox_Separator.SelectedIndex == 1)
+            {
+                // Split the source text by new lines, periods, exclamation and question marks
+                sourceFragments = sourceText.Split(new string[] { Environment.NewLine, "\n", "\r", ".", "!", "?" },
+                    StringSplitOptions.RemoveEmptyEntries);
+
+                // Split the target text by new lines, periods, exclamation and question marks
+                targetFragments = targetText.Split(new string[] { Environment.NewLine, "\n", "\r", ".", "!", "?" },
+                    StringSplitOptions.RemoveEmptyEntries);
+            }
+            // If we align by words...
+            else
+            {
+                // Split the source text by new lines and whitespaces
+                sourceFragments = sourceText.Split(new string[] { Environment.NewLine, "\n", "\r", " " },
+                    StringSplitOptions.RemoveEmptyEntries);
+
+                // Split the target text by new lines and whitespaces
+                targetFragments = targetText.Split(new string[] { Environment.NewLine, "\n", "\r", " " },
+                    StringSplitOptions.RemoveEmptyEntries);
+            }
+
+            // Remove source fragments that are empty or whitespace
+            sourceFragments = sourceFragments.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
+
+            // Remove target fragments that are empty or whitespace
+            targetFragments = targetFragments.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
+
+            // If the program is licensed...
+            if (QP._isLicensed)
+                // Pass all fragments
+                Window_AlignFragmentsManager.ClosePreviousAndShow(sourceFragments, targetFragments, this);
+            // If the program is not licensed...
+            else
+                // Pass only first MAX fragments
+                Window_AlignFragmentsManager.ClosePreviousAndShow(sourceFragments.Take(mLimitMaxEntryCount).ToArray(),
+                    targetFragments.Take(mLimitMaxEntryCount).ToArray(), this);
         }
 
-        private void btnOpenFile2_Click(object sender, RoutedEventArgs e)
-        {
 
-        }
 
         private void targetItem_AlignAsTableSingleRow_Click(object sender, RoutedEventArgs e)
         {
-
+            // Align text fragments of the text in the target textbox as a table which consists of 2 columns and 1 row
+            AlignAsTableSingleRow(txtEditor2.Text);
         }
 
         private void targetItem_AlignAsTableMultipleRows_Click(object sender, RoutedEventArgs e)
         {
-
+            // Align text fragments of the text in the target textbox as a table which consists of 2 columns and multiple rows
+            AlignAsTableMultipleRows(txtEditor2.Text);
         }
 
         private void btn_ClearTarget_Click(object sender, RoutedEventArgs e)

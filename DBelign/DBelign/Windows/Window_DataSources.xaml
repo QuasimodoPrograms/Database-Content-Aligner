@@ -53,7 +53,7 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Column="0" Name="btn_Register" Click="btn_Register_Click" ToolTip="Register this program" Content="Register" BorderBrush="Transparent" Background="Transparent" HorizontalAlignment="Center" Visibility="Collapsed" Margin="5 0 0 0"/>
+                <Button Grid.Column="0" Name="btn_Register" Click="btn_Register_Click" ToolTip="Register this program" Content="Register" BorderBrush="Transparent" Background="Transparent" HorizontalAlignment="Center" Margin="5 0 0 0"/>
 
                 <Button Grid.Column="1" Name="btn_Update" Click="btn_Update_Click" ToolTip="Check for update on the website" Content="Update" BorderBrush="Transparent" Background="Transparent" HorizontalAlignment="Center" Visibility="Collapsed" Margin="5 0 0 0"/>
 
