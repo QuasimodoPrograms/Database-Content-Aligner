@@ -23,6 +23,11 @@ namespace DBelign
         /// </summary>
         private const int mLimitMaxEntryCount = 100;
 
+        /// <summary>
+        /// This window's opacity when another window is opened to make fading effect
+        /// </summary>
+        private const double mDarkOpacity = 0.5;
+
         #endregion
 
         public Window_DataSources()
@@ -44,6 +49,36 @@ namespace DBelign
             }
 
             InitializeComponent();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            // If the program is registered...
+            if (QP._isLicensed)
+                // Hide the register button
+                btn_Register.Visibility = Visibility.Collapsed;
+        }
+
+        private void btn_Register_Click(object sender, RoutedEventArgs e)
+        {
+            // Darken this window
+            Opacity = mDarkOpacity;
+
+            // Initialize Window_Buy
+            Window_Buy win = new Window_Buy()
+            {
+                Owner = this,
+                ShowInTaskbar = false
+            };
+
+            // Show Window_Buy
+            win.ShowDialog();
+
+            // Remove darkness from this window
+            Opacity = 1;
+
+            // Show this window in Taskbar
+            ShowInTaskbar = true;
         }
 
         private void btnOpenFile1_Click(object sender, RoutedEventArgs e)
@@ -138,10 +173,7 @@ namespace DBelign
 
         private string GetCellValue(Excel.Worksheet sheet, int row, int column) => sheet.Cells[row, column].Text.ToString();
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
 
-        }
 
         private void txtEditor_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -173,10 +205,7 @@ namespace DBelign
                 menu_target.IsEnabled = true;
         }
 
-        private void btn_Register_Click(object sender, RoutedEventArgs e)
-        {
 
-        }
 
         private void btn_Update_Click(object sender, RoutedEventArgs e)
         {

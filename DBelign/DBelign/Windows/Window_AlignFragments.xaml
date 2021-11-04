@@ -5,8 +5,60 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DBelign"
         mc:Ignorable="d"
-        Title="Window_AlignFragments" Height="450" Width="800">
+        Title="Alignment - DBelign" Width="1366"
+        WindowStartupLocation="CenterScreen"
+        MinHeight="400" MinWidth="725" WindowState="Maximized"
+        Loaded="Window_Loaded"
+        ContentRendered="Window_ContentRendered">
+
+    <Window.Resources>
+
+        <Style TargetType="Image">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.25"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+
+        <ToolTip x:Key="unitTooltip" Foreground="Black" Background="Khaki" HasDropShadow="False" Opacity="1">
+            <TextBlock Text="{Binding Path=Text}" MaxWidth="650" TextWrapping="Wrap"/>
+        </ToolTip>
+
+    </Window.Resources>
+
+    <!-- Outer grid -->
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <!-- Top panel -->
+        <Grid Grid.Row="0" Margin="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+
+        </Grid>
+
+        <!-- Grid for ListViews and bottom tools -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <ListView Grid.Column="0" x:Name="listView1"/>
+
+            <ListView Grid.Column="1" x:Name="listView2"/>
+        </Grid>
     </Grid>
 </Window>
