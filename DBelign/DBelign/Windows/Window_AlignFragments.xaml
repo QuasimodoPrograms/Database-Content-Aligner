@@ -56,9 +56,25 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
-            <ListView Grid.Column="0" x:Name="listView1"/>
+            <ListView Grid.Column="0" x:Name="listView1">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="ID" Width="35" DisplayMemberBinding="{Binding ID}"/>
 
-            <ListView Grid.Column="1" x:Name="listView2"/>
+                        <GridViewColumn Header="Text" DisplayMemberBinding="{Binding Text}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <ListView Grid.Column="1" x:Name="listView2">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="ID" Width="35" DisplayMemberBinding="{Binding ID}"/>
+
+                        <GridViewColumn Header="Text" DisplayMemberBinding="{Binding Text}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
         </Grid>
     </Grid>
 </Window>

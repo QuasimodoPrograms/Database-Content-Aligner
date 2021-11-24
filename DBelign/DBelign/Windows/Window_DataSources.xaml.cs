@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -206,10 +207,27 @@ namespace DBelign
         }
 
 
-
+        /// <summary>
+        /// Launch the update program
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_Update_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                // Try to stasrt the update program
+                Process.Start("update.exe", "/checknow");
+            }
+            // If there is an error...
+            catch (Exception ex)
+            {
+                // Show the error message
+                MessageBox.Show($"{ ex.Message }{ Environment.NewLine }The product's page will be opened.");
 
+                // Open the product page
+                Process.Start("https://www.youtube.com/c/QuasimodoPrograms");
+            }
         }
 
         private void sourceItem_AlignAsTableSingleRow_Click(object sender, RoutedEventArgs e)

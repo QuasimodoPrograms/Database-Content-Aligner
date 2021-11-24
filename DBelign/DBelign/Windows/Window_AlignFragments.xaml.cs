@@ -50,22 +50,53 @@ namespace DBelign
             mTargetFragments = targetFragments;
         }
 
-
-
         #endregion
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             DataContext = this;
 
-            listView1.ItemsSource = mSourceFragments;
-
-            listView2.ItemsSource = mTargetFragments;
+            // Create fragments from strings and fill ListViews
+            CreateFragmentsAndFillListViews();
         }
 
         private void Window_ContentRendered(object sender, EventArgs e)
         {
 
+        }
+
+        /// <summary>
+        /// Create fragments from strings and fill ListViews
+        /// </summary>
+        public void CreateFragmentsAndFillListViews()
+        {
+            // Loop through all source string fragments
+            for (int i = 0; i < mSourceFragments.Length; i++)
+            {
+                // Create a new fragment
+                var baseFragment = new BaseFragment()
+                {
+                    ID = i,
+                    Text = mSourceFragments[i],
+                };
+
+                // Add the fragment to the source ListView
+                listView1.Items.Add(baseFragment);
+            }
+
+            // Loop through all target string fragments
+            for (int i = 0; i < mTargetFragments.Length; i++)
+            {
+                // Create a new fragment
+                var baseFragment = new BaseFragment()
+                {
+                    ID = i,
+                    Text = mTargetFragments[i],
+                };
+
+                // Add the fragment to the target ListView
+                listView2.Items.Add(baseFragment);
+            }
         }
     }
 
