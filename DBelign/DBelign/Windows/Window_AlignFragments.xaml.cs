@@ -73,15 +73,15 @@ namespace DBelign
             // Loop through all source string fragments
             for (int i = 0; i < mSourceFragments.Length; i++)
             {
-                // Create a new fragment
-                var baseFragment = new BaseFragment()
+                // Create a new source fragment
+                var fragment = new SourceFragment()
                 {
                     ID = i,
                     Text = mSourceFragments[i],
                 };
 
                 // Add the fragment to the source ListView
-                listView1.Items.Add(baseFragment);
+                listView1.Items.Add(fragment);
             }
 
             // Loop through all target string fragments

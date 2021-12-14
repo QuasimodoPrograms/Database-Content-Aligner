@@ -61,7 +61,32 @@
                     <GridView>
                         <GridViewColumn Header="ID" Width="35" DisplayMemberBinding="{Binding ID}"/>
 
-                        <GridViewColumn Header="Text" DisplayMemberBinding="{Binding Text}"/>
+                        <GridViewColumn Header="Text">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="/Images/exclaim.png"
+                                               ToolTip="No target"
+                                               MaxHeight="16"
+                                               Margin="0 0 5 0">
+                                            <Image.Style>
+                                                <Style TargetType="{x:Type Image}">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Path=HasTarget}" Value="False">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Image.Style>
+                                        </Image>
+
+                                        <TextBlock Text="{Binding Text}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
                     </GridView>
                 </ListView.View>
             </ListView>
