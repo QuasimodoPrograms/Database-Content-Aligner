@@ -83,4 +83,8 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="Button" x:Key="ImageButton">
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+
 </ResourceDictionary>

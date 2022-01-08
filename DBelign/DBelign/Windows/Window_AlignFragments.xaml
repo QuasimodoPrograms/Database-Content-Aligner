@@ -46,7 +46,19 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
+            <ToolBarTray Grid.Column="1"
+                         VerticalAlignment="Center"
+                         IsLocked="True">
+                <ToolBar>
 
+                    <Button Name="btn_Save"
+                            ToolTip="Save"
+                            Click="btn_Save_Click">
+                        <Image Source="/Images/save-blue.png"
+                               MaxHeight="16"/>
+                    </Button>
+                </ToolBar>
+            </ToolBarTray>
         </Grid>
 
         <!-- Grid for ListViews and bottom tools -->

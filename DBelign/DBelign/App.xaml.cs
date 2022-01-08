@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 
@@ -15,6 +16,16 @@ namespace DBelign
             SplashScreen splash = new SplashScreen("/Images/splash.png");
             splash.Show(false);
             Thread.Sleep(500);
+
+            // Auto-update mechanics
+            try
+            {
+                //Process.Start("update.exe", "/silent");
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show(ex.Message);
+            }
 
             splash.Close(new TimeSpan(0, 0, 1));
         }

@@ -31,6 +31,16 @@ namespace DBelign
         /// </summary>
         private readonly string[] mTargetFragments;
 
+        /// <summary>
+        /// A collection of <see cref="SourceFragment"/>
+        /// </summary>
+        private readonly List<SourceFragment> mSourceFragmentsCollection = new List<SourceFragment>();
+
+        /// <summary>
+        /// Opacity used to darken this window
+        /// </summary>
+        private const double mDarkOpacity = 0.5;
+
         #endregion
 
         void IDisposable.Dispose() { }
@@ -80,6 +90,9 @@ namespace DBelign
                     Text = mSourceFragments[i],
                 };
 
+                // Add the fragment to the source collection
+                mSourceFragmentsCollection.Add(fragment);
+
                 // Add the fragment to the source ListView
                 listView1.Items.Add(fragment);
             }
@@ -97,6 +110,34 @@ namespace DBelign
                 // Add the fragment to the target ListView
                 listView2.Items.Add(baseFragment);
             }
+        }
+
+        private void btn_Save_Click(object sender, RoutedEventArgs e)
+        {
+            // Darken this window
+            Opacity = mDarkOpacity;
+
+            // Create a new window to save results
+            var win = new Window_Save()
+            {
+                Owner = this,
+                ShowInTaskbar = false
+            };
+
+            // Pass source fragments
+            win.SourceFragments = mSourceFragmentsCollection;
+
+            // Pass target fragments
+            win.TargetFragments = listView2.Items;
+
+            // Sow the save window
+            win.ShowDialog();
+
+            // Restore this window's opacity
+            Opacity = 1;
+
+            // Show in taskbar again
+            ShowInTaskbar = true;
         }
     }
 
